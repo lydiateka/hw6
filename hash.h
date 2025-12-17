@@ -19,15 +19,47 @@ struct MyStringHash {
     // hash function entry point (i.e. this is h(k))
     HASH_INDEX_T operator()(const std::string& k) const
     {
-        // Add your code here
+        unsigned long long w[5] = {0}; 
+        int index = k.size(); 
+        int count = 4; 
+        while (index >= 6) { 
+            for (int i = index - 6; i < index; i++) { 
+                int digit = letterDigitToNumber(k[i]); 
+                w[count] = w[count] * 36 + digit; 
+            }
+            index -= 6; 
+            count -=1; 
+        }
 
+        if (index > 0 && index < 6) { 
+            for (int i = 0; i < 6; i++) { 
+                int digit = 0; 
+                if (i >= 6 - index) { 
+                    digit = letterDigitToNumber(k[i - (6 - index)]); 
+                }
+                w[count] = w[count] * 36 + digit; 
+            }
+        }
+
+        unsigned long long hash = 0; 
+        for (int i = 0; i < 5; i++) { 
+           hash += rValues[i]*w[i];   
+        }
+
+        return hash; 
 
     }
 
     // A likely helper function is to convert a-z,0-9 to an integral value 0-35
     HASH_INDEX_T letterDigitToNumber(char letter) const
     {
-        // Add code here or delete this helper function if you do not want it
+        letter = tolower(letter); 
+        if (letter >= 'a' && letter <= 'z') { 
+            return letter - 'a'; 
+        }
+        else { 
+          return (letter -'0') + 26;   
+        }
 
     }
 
